@@ -28,13 +28,18 @@ const FilteredProducts = () => {
 
   const handleCreate = async () => {
     try {
-      await fetch('http://localhost:3001/products', {
+      const response = await fetch('http://localhost:3001/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title: 'New Post' }),
+        body: JSON.stringify({ title: 'New Post'}),
       });
+      if (response.ok) {
+        const result = await response.json();
+        setData((prevData) => [...prevData, result]);
+        setAllProducts(data)
+      }
     } catch (error) {
       console.error('Error creating data:', error);
     }
@@ -42,9 +47,13 @@ const FilteredProducts = () => {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:3001/products/${id}`, {
+      const response = await fetch(`http://localhost:3001/products/${id}`, {
         method: 'DELETE',
       });
+      if (response.ok) {
+        setData((prevData) => prevData.filter((item) => item.id !== id));
+        setAllProducts(data)
+      }
     } catch (error) {
       console.error('Error deleting data:', error);
     }
@@ -59,7 +68,7 @@ const FilteredProducts = () => {
             <button type="button" class="btn btn-primary me-3 my-3" onClick={()=>filteredItems("women's clothing")}>Women's Clothing</button>
             <button type="button" class="btn btn-primary me-3 my-3" onClick={()=>filteredItems("jewelery")}>Jewelery</button>
             <button type="button" class="btn btn-primary me-3 my-3" onClick={()=>filteredItems("electronics")}>Electronics</button>
-            <button type="button" class="btn btn-primary me-3 my-3 add-button" onClick={()=>handleCreate}> + </button>
+            <button type="button" class="btn btn-primary me-3 my-3 add-button" onClick={()=>handleCreate()}> + </button>
 
         <hr />
         <div className="row">
